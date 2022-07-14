@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import ConsoleLoggerTransport from '../../lib/winston-console-transport';
+import WinstonConsoleLoggerTransport from '../../lib/winston-console-logger-transport';
 
 const logTransports = [
   new transports.File({
@@ -17,8 +17,10 @@ const logTransports = [
       },
     }),
   }),
-  new ConsoleLoggerTransport(),
+  new WinstonConsoleLoggerTransport(),
 ];
+
+console.log(process.env.NODE_ENV === 'development' ? 'silly' : 'info');
 
 const logger = createLogger({
   format: format.combine(format.timestamp()),

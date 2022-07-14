@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const safeMongooseConnection = new SafeMongooseConnection({
-  mongoUrl: process.env.MONGODB_CONNECTION ?? '',
+  mongoUrl: process.env.DB_CONNECTION_STRING ?? '',
   debugCallback,
   onStartConnection: (mongoUrl) =>
     logger.info(`Connecting to MongoDB at ${mongoUrl}`),
@@ -47,10 +47,10 @@ const safeMongooseConnection = new SafeMongooseConnection({
     logger.info(`Retrying to MongoDB at ${mongoUrl}`),
 });
 
-if (process.env.MONGODB_CONNECTION == null) {
+if (process.env.DB_CONNECTION_STRING == null) {
   logger.error(
-    'MONGODB_CONNECTION not specified in environment',
-    new Error('MONGODB_CONNECTION not specified in environment'),
+    'DB_CONNECTION_STRING not specified in environment',
+    new Error('DB_CONNECTION_STRING not specified in environment'),
   );
   process.exit(1);
 } else {

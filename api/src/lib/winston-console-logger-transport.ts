@@ -1,4 +1,11 @@
 import * as Transport from 'winston-transport';
+import * as dotenv from 'dotenv';
+
+const result = dotenv.config();
+
+if (result.error) dotenv.config({ path: '.env.default' });
+
+console.log(result);
 
 /**
  * https://stackoverflow.com/a/41407246
@@ -13,7 +20,7 @@ const levelStyleMap: { [key: string]: string } = {
   silly: '\x1b[36m%s\x1b[0m',
 };
 
-export default class ConsoleLoggerTransport extends Transport {
+export default class WinstonConsoleLoggerTransport extends Transport {
   log(info: any, callback: { (): void }) {
     const label =
       info.consoleLoggerOptions?.label! || (info.level as string).toUpperCase();

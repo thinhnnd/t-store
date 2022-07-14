@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import * as cors from 'cors';
 import './controllers';
 import logger from './core/utils/logger';
-
+import { logResponseTimeMiddleware } from './middlewares/log-response-time.middleware';
 class App {
   public app: Application;
   public server: InversifyExpressServer;
@@ -43,6 +43,7 @@ class App {
   private createServer(): InversifyExpressServer {
     let server = new InversifyExpressServer(this.container);
     server.setConfig((app) => {
+      app.use(logResponseTimeMiddleware);
       app.use(bodyParser.json());
       app.use(helmet());
       const corsOptions = {
