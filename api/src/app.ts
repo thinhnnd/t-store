@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import 'reflect-metadata';
 import { Application } from 'express';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import { Container } from 'inversify';
@@ -6,8 +6,8 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
 import * as cors from 'cors';
-import 'dotenv/config';
-import './controllers/home.controller';
+import './controllers';
+import logger from './core/utils/logger';
 
 class App {
   public app: Application;
@@ -23,27 +23,24 @@ class App {
 
   private initializeContainer() {}
 
-  private connectToTheDatabase() {
-    const { MONGODB_CONNECTION } = process.env;
-    mongoose
-      .connect(MONGODB_CONNECTION)
-      .then(() => console.info(`[Mongoose] Database is successfully connected`))
-      .catch((error) =>
-        console.error('[Mongoose]: Error while conencted to database ', error),
-      );
-  }
-
-  public listen() {
+  private listen() {
     const { APP_PORT } = process.env;
 
     this.app.listen(5000, () => {
-      console.log(`[APP] App listening on the port ${APP_PORT}`);
+      logger.info(
+        `🌏[APP] Server has servered at http://localhost:${APP_PORT}`,
+      );
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'staging'
+      )
+        logger.info(
+          `⚙️  Swagger UI hosted at http://localhost:${APP_PORT}/dev/api-docs`,
+        );
     });
   }
 
-  // Need boolean return type
-  public start() {
-    this.connectToTheDatabase();
+  private createServer(): InversifyExpressServer {
     let server = new InversifyExpressServer(this.container);
     server.setConfig((app) => {
       app.use(bodyParser.json());
@@ -54,7 +51,12 @@ class App {
       app.use(cors(corsOptions));
     });
 
-    this.app = server.build();
+    return server;
+  }
+
+  // Need boolean return type
+  public start() {
+    this.app = this.createServer().build();
 
     this.listen();
   }
