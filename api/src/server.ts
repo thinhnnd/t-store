@@ -3,6 +3,7 @@ import util from 'util';
 import App from './app';
 import logger from './core/utils/logger';
 import SafeMongooseConnection from './lib/safe-mongoose-connection';
+import { CONFIGURATION } from './core/config/configuration';
 
 const result = dotenv.config();
 
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const safeMongooseConnection = new SafeMongooseConnection({
-  mongoUrl: process.env.DB_CONNECTION_STRING ?? '',
+  mongoUrl: CONFIGURATION.database.connectionString ?? '',
   debugCallback,
   onStartConnection: (mongoUrl) =>
     logger.info(`Connecting to MongoDB at ${mongoUrl}`),
@@ -47,7 +48,7 @@ const safeMongooseConnection = new SafeMongooseConnection({
     logger.info(`Retrying to MongoDB at ${mongoUrl}`),
 });
 
-if (process.env.DB_CONNECTION_STRING == null) {
+if (CONFIGURATION.database.connectionString == null) {
   logger.error(
     'DB_CONNECTION_STRING not specified in environment',
     new Error('DB_CONNECTION_STRING not specified in environment'),

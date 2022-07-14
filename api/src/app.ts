@@ -9,6 +9,7 @@ import * as cors from 'cors';
 import './controllers';
 import logger from './core/utils/logger';
 import { logResponseTimeMiddleware } from './middlewares/log-response-time.middleware';
+import { CONFIGURATION } from './core/config/configuration';
 class App {
   public app: Application;
   public server: InversifyExpressServer;
@@ -24,18 +25,16 @@ class App {
   private initializeContainer() {}
 
   private listen() {
-    const { APP_PORT } = process.env;
-
-    this.app.listen(5000, () => {
+    this.app.listen(CONFIGURATION.port, () => {
       logger.info(
-        `🌏[APP] Server has servered at http://localhost:${APP_PORT}`,
+        `🌏[APP] Server has servered at http://localhost:${CONFIGURATION.port}`,
       );
       if (
         process.env.NODE_ENV === 'development' ||
         process.env.NODE_ENV === 'staging'
       )
         logger.info(
-          `⚙️  Swagger UI hosted at http://localhost:${APP_PORT}/dev/api-docs`,
+          `⚙️  Swagger UI hosted at http://localhost:${CONFIGURATION.port}/dev/api-docs`,
         );
     });
   }

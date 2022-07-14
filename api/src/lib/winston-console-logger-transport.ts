@@ -5,8 +5,6 @@ const result = dotenv.config();
 
 if (result.error) dotenv.config({ path: '.env.default' });
 
-console.log(result);
-
 /**
  * https://stackoverflow.com/a/41407246
  * Log level escpace codes
